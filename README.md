@@ -32,7 +32,7 @@ The output should be something like this (I removed some entries because the out
 ```
 Screen 0: minimum 8 x 8, current 1920 x 1080, maximum 32767 x 32767
 HDMI-0 disconnected primary (normal left inverted right x axis y axis)
-eDP-1-1 connected 1920x1080+0+0 (normal left inverted right x axis y axis) 344mm x 194mm
+eDP1 connected 1920x1080+0+0 (normal left inverted right x axis y axis) 344mm x 194mm
    1920x1080    144.00*+  60.01    59.97    59.96    59.93  
    1680x1050     84.94    74.89    69.88    59.95    59.88  
    1600x1024     60.17  
@@ -51,9 +51,9 @@ eDP-1-1 connected 1920x1080+0+0 (normal left inverted right x axis y axis) 344mm
    320x180       59.84    59.32  
    320x175       85.27  
 DP-1-1 disconnected (normal left inverted right x axis y axis)
-HDMI-1-1 disconnected (normal left inverted right x axis y axis)
+VIRTUAL1 disconnected (normal left inverted right x axis y axis)
 ```
-As you can see, my current display is `eDP-1-1` with the resolution _1920x1080 144.00Hz_. The unused output ports are `HDMI-0`, `DP-1-1` and `HDMI-1-1`. You may have a different output ports and resolutions depending on your graphic card.
+As you can see, my current display is `eDP1` with the resolution _1920x1080 144.00Hz_. The unused output ports are `HDMI-0`, `DP-1-1` and `VIRTUAL1`. You may have a different output ports and resolutions depending on your graphic card.
 
 ### 2. Create a new virtual monitor
 
@@ -81,17 +81,17 @@ xrandr --newmode "2560x1600_60.00"  83.46  2560 1344 1480 1680  1600 801 804 828
 ```
 > **Note**: xrandr means X Resize and Rotate    (just a curiosity)
 
-Add this new mode to an unused output port. `HDMI-1-1` in this case.
+Add this new mode to an unused output port. `VIRTUAL1` in this case.
 > You may have a different output ports so you need to try the output ports that work for you. Find the available ports with the command `xrandr` like in the [first section](#1-get-some-information)
 
 ```
-xrandr --addmode HDMI-1-1 2560x1600_60.00
+xrandr --addmode VIRTUAL1 2560x1600_60.00
 ```
 
-Now let’s enable `HDMI-1-1` and move it to the left of the default display (`eDP-1-1`). After this mouse cursor can be moved to the left side more than your default display allows. It is because we are adding 2560×1600 to the left side of `eDP-1-1`.
+Now let’s enable `VIRTUAL1` and move it to the left of the default display (`eDP1`). After this mouse cursor can be moved to the left side more than your default display allows. It is because we are adding 2560×1600 to the left side of `eDP1`.
 
 ```
-xrandr --output HDMI-1-1 --mode 2560x1600_60.00 --left-of eDP-1-1
+xrandr --output VIRTUAL1 --mode 2560x1600_60.00 --left-of eDP1
 ```
 > If you want to put the second screen in the right side of the default display just change the option `--left-of` by `--right-of`.
 
@@ -112,9 +112,9 @@ _Screenshot of the bVNC Free app_
 
 ### 3. Disable the second screen
 
-After stopping the VNC server you need to disable the second screen `HDMI-1-1`:
+After stopping the VNC server you need to disable the second screen `VIRTUAL1`:
 ```
-xrandr --output HDMI-1-1 --off
+xrandr --output VIRTUAL1 --off
 ```
 
 ### Summary
@@ -123,22 +123,22 @@ Every time you reboot the computer you will have to add the modeline again. Then
 ```
 # Create the virtual monitor (every time after rebooting the computer)
 xrandr --newmode "2560x1600_60.00"  83.46  2560 1344 1480 1680  1600 801 804 828  -HSync +Vsync
-xrandr --addmode HDMI-1-1 2560x1600_60.00
+xrandr --addmode VIRTUAL1 2560x1600_60.00
 
 # Enable the second display
-xrandr --output HDMI-1-1 --mode 2560x1600_60.00 --left-of eDP-1-1
+xrandr --output VIRTUAL1 --mode 2560x1600_60.00 --left-of eDP1
 x11vnc -clip 2560x1600+0+0
 
 # Disable
-xrandr --output HDMI-1-1 --off
+xrandr --output VIRTUAL1 --off
 ```
 
 ### Clean modes
 
 To remove the mode:
 ```
-xrandr --output HDMI-1-1 --off
-xrandr --delmode HDMI-1-1 "2560x1600_60.00"
+xrandr --output VIRTUAL1 --off
+xrandr --delmode VIRTUAL1 "2560x1600_60.00"
 xrandr --rmmode "2560x1600_60.00"
 ```
 
